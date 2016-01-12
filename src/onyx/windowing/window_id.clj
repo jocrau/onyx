@@ -39,9 +39,9 @@
 ;; 3 window IDs are of length 5, 10, and 15 respectively. You can imagine that
 ;; the rest of the window is on the left-hand-side (not seen) of the X axis.
 ;; The ranges (right hand side) are inclusive on both sides. That is, the bucket
-;; [0, 5) captures all values between 0 and 4.999999... (using the mathematical
-;; notation for intervals, see
-;; https://en.wikipedia.org/wiki/Interval_%28mathematics%29#Classification_of_intervals
+;; [0, 5) captures all values between 0 and 4.999999... using the mathematical
+;; notation for intervals (see
+;; https://en.wikipedia.org/wiki/Interval_%28mathematics%29#Classification_of_intervals)
 
 ;;   1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75
 ;;0  [--)                                                         [ 0,  5)
@@ -63,15 +63,15 @@
 ;; slide values are the same. This is the first algorithm detailed in
 ;; section 3.3.
 
-(defn extent-lower [min-windowing-attr w-range w-slide w]
-  (max min-windowing-attr (- (+ min-windowing-attr (* w-slide (inc w))) w-range)))
+(defn extent-lower [min-windowing-val w-range w-slide w-id]
+  (max min-windowing-val (- (+ min-windowing-val (* w-slide (inc w-id))) w-range)))
 
-(defn extent-upper [min-windowing-attr w-slide w]
-  (dec (+ min-windowing-attr (* w-slide (inc w)))))
+(defn extent-upper [min-windowing-val w-slide w-id]
+  (dec (+ min-windowing-val (* w-slide (inc w-id)))))
 
-(defn extents [min-windowing-attr w-range w-slide w]
-  (range (extent-lower min-windowing-attr w-range w-slide w)
-         (inc (extent-upper min-windowing-attr w-slide w))))
+(defn extents [min-windowing-val w-range w-slide w-id]
+  (range (extent-lower min-windowing-val w-range w-slide w-id)
+         (inc (extent-upper min-windowing-val w-slide w-id))))
 
 ;; WID requires that a strict lower-bound of the windowing attribute
 ;; be defined. In our example, this will be 0. We will use a window
@@ -110,20 +110,20 @@
 ;; `wids` is defined in section 3.4 of the paper. This is the variant
 ;; of the algorithm that also covers the case where range and slide
 ;; are defined on the same value.
-(defn wids-lower [min-windowing-attr w-slide w-key t]
+(defn wids-lower [min-windowing-val w-slide w-key t]
   (dec (long (Math/floor (/ (- (get t w-key)
-                               min-windowing-attr) 
+                               min-windowing-val)
                             w-slide)))))
 
-(defn wids-upper [min-windowing-attr w-range w-slide w-key t]
-  (dec (long (Math/floor (/ (- (+ (get t w-key) 
+(defn wids-upper [min-windowing-val w-range w-slide w-key t]
+  (dec (long (Math/floor (/ (- (+ (get t w-key)
                                   w-range)
-                               min-windowing-attr) 
+                               min-windowing-val)
                             w-slide)))))
 
-(defn wids [min-windowing-attr w-range w-slide w-key t]
-  (let [lower (wids-lower min-windowing-attr w-slide w-key t)
-        upper (wids-upper min-windowing-attr w-range w-slide w-key t)]
+(defn wids [min-windowing-val w-range w-slide w-key t]
+  (let [lower (wids-lower min-windowing-val w-slide w-key t)
+        upper (wids-upper min-windowing-val w-range w-slide w-key t)]
     (range (inc lower) (inc upper))))
 
 ;; The follow code runs through 30 segments with

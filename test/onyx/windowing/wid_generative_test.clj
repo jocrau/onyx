@@ -12,10 +12,8 @@
    "one segment per fixed window"
    (times 500)
    [w-range-and-slide gen/s-pos-int
-    w-attr gen/pos-int]
-   (let [w-key :window-key
-         segment {:window-key w-attr}
-         buckets (wids 0 w-range-and-slide w-range-and-slide w-key segment)]
+    value gen/pos-int]
+   (let [buckets (wids 0 w-range-and-slide w-range-and-slide :window-key {:window-key value})]
      (is (= 1 (count buckets))))))
 
 (deftest sliding-windows
@@ -24,23 +22,24 @@
    (times 500)
    [w-slide gen/s-pos-int
     multiple gen/s-pos-int
-    w-attr gen/pos-int]
-   (let [w-key :window-key
-         segment {:window-key w-attr}
-         buckets (wids 0 (* multiple w-slide) w-slide w-key segment)]
+    value gen/pos-int]
+   (let [w-range (* multiple w-slide)
+         buckets (wids 0 w-range w-slide :window-key {:window-key value})]
      (is (= multiple (count buckets))))))
 
 (deftest inverse-functions
   (checking
-   "values produced by extents are matched by wids"
-   (times 500)
-   ;; Bound the window size to 10 to keep the each test iteration quick.
-   [w-slide (gen/resize 10 gen/s-pos-int)
-    multiple gen/s-pos-int
-    extent-id gen/pos-int]
-   (let [w-key :window-key
-         values (extents 0 (* multiple w-slide) w-slide extent-id)]
-     (is (every? #(some #{extent-id}
-                        (wids 0 (* multiple w-slide) w-slide w-key {:window-key %}))
+    "values produced by extents are matched by wids"
+    (times 500)
+    ;; Bound the window size to 10 to keep the each test iteration quick.
+    [w-slide (gen/resize 10 gen/s-pos-int)
+     multiple gen/s-pos-int
+     w-id gen/pos-int]
+    (let [w-range (* multiple w-slide)
+          values (extents 0 w-range w-slide w-id)]
+      (is (every?
+            (fn [value]
+              (some #{w-id}
+                    (map long (wids 0 w-range w-slide :window-key {:window-key value}))))
                  values)))))
 
