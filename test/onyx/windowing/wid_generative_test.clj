@@ -14,6 +14,7 @@
    [w-range-and-slide gen/s-pos-int
     value (gen/one-of [gen/pos-int
                        (gen/double* {:min       0
+                                     :max       Long/MAX_VALUE
                                      :infinite? false
                                      :NaN?      false})])]
    (let [buckets (wids 0 w-range-and-slide w-range-and-slide :window-key {:window-key value})]
@@ -27,6 +28,7 @@
     multiple gen/s-pos-int
     value (gen/one-of [gen/pos-int
                        (gen/double* {:min       0
+                                     :max       Long/MAX_VALUE
                                      :infinite? false
                                      :NaN?      false})])]
    (let [w-range (* multiple w-slide)
