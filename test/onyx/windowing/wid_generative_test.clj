@@ -12,7 +12,10 @@
    "one segment per fixed window"
    (times 500)
    [w-range-and-slide gen/s-pos-int
-    value gen/pos-int]
+    value (gen/one-of [gen/pos-int
+                       (gen/double* {:min       0
+                                     :infinite? false
+                                     :NaN?      false})])]
    (let [buckets (wids 0 w-range-and-slide w-range-and-slide :window-key {:window-key value})]
      (is (= 1 (count buckets))))))
 
@@ -22,7 +25,10 @@
    (times 500)
    [w-slide gen/s-pos-int
     multiple gen/s-pos-int
-    value gen/pos-int]
+    value (gen/one-of [gen/pos-int
+                       (gen/double* {:min       0
+                                     :infinite? false
+                                     :NaN?      false})])]
    (let [w-range (* multiple w-slide)
          buckets (wids 0 w-range w-slide :window-key {:window-key value})]
      (is (= multiple (count buckets))))))
@@ -42,4 +48,3 @@
               (some #{w-id}
                     (map long (wids 0 w-range w-slide :window-key {:window-key value}))))
                  values)))))
-
