@@ -671,6 +671,13 @@
              :default 1000
              :added "0.8.3"}
 
+            :onyx.task-scheduler.colocated/only-send-local?
+            {:doc "When this peer is running a task for a job with a colocated task scheduler and this value is true, this peer will only send messages to segments local to its machine. It is desirable to set this to false when you want tasks to be perfectly uniformly spread over the machines in your cluster, but do not want jobs to run entirely locally."
+             :optional? true
+             :type :boolean
+             :default true
+             :added "0.8.4"}
+
             :onyx.messaging/inbound-buffer-size
             {:doc "Number of messages to buffer in the core.async channel for received segments."
              :optional? true
@@ -1047,7 +1054,21 @@
              :type :string
              :default "/tmp/bookkeeper_ledger"
              :optional? true
-             :added "0.8.0"}}}})
+             :added "0.8.0"}
+
+            :onyx.bookkeeper/disk-usage-threshold
+            {:doc "Fraction of the total utilized usable disk space to declare the disk full. The value of this parameter represents a percentage."
+             :optional? true
+             :type :double
+             :default 0.98
+             :added "0.8.4"}
+
+            :onyx.bookkeeper/disk-usage-warn-threshold
+            {:doc "Fraction of the total utilized usable disk space to warn about disk usage. The value of this parameter represents a percentage. It needs to lower or equal than the :onyx.bookkeeper/disk-usage-threshold"
+             :optional? true
+             :type :double
+             :default 0.95
+             :added "0.8.4"}}}})
 
 (def model-display-order
   {:catalog-entry
@@ -1137,7 +1158,7 @@
     :onyx.bookkeeper/ledger-id-written-back-off
     :onyx.bookkeeper/ledger-password 
     :onyx.bookkeeper/client-throttle
-    :onyx.bookkeeper/write-buffer-size 
+    :onyx.bookkeeper/write-buffer-size
     :onyx.bookkeeper/client-timeout
     :onyx.peer/state-filter-impl 
     :onyx.rocksdb.filter/base-dir
@@ -1147,11 +1168,18 @@
     :onyx.rocksdb.filter/peer-block-cache-size
     :onyx.rocksdb.filter/num-buckets 
     :onyx.rocksdb.filter/num-ids-per-bucket
-    :onyx.rocksdb.filter/rotation-check-interval-ms]
+    :onyx.rocksdb.filter/rotation-check-interval-ms
+    :onyx.task-scheduler.colocated/only-send-local?]
    :env-config
-   [:zookeeper/server? :zookeeper.server/port :onyx/id :zookeeper/address
+   [:onyx/id
+    :zookeeper/server?
+    :zookeeper.server/port
+    :zookeeper/address
     :onyx.bookkeeper/server? 
     :onyx.bookkeeper/delete-server-data?
     :onyx.bookkeeper/local-quorum?
     :onyx.bookkeeper/local-quorum-ports :onyx.bookkeeper/port
-    :onyx.bookkeeper/base-journal-dir :onyx.bookkeeper/base-ledger-dir]})
+    :onyx.bookkeeper/base-journal-dir
+    :onyx.bookkeeper/base-ledger-dir
+    :onyx.bookkeeper/disk-usage-threshold
+    :onyx.bookkeeper/disk-usage-warn-threshold]})
