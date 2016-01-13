@@ -63,15 +63,16 @@
 ;; slide values are the same. This is the first algorithm detailed in
 ;; section 3.3.
 
-(defn extent-lower [min-windowing-val w-range w-slide w-id]
+(defn extents-lower-bound [min-windowing-val w-range w-slide w-id]
   (max min-windowing-val (- (+ min-windowing-val (* w-slide (inc w-id))) w-range)))
 
-(defn extent-upper [min-windowing-val w-slide w-id]
+(defn extents-upper-bound [min-windowing-val w-slide w-id]
   (dec (+ min-windowing-val (* w-slide (inc w-id)))))
 
+;; TODO The extent function should take a set of segments (tuples) as an argument and not assume that the extents integers or increment by 1
 (defn extents [min-windowing-val w-range w-slide w-id]
-  (range (extent-lower min-windowing-val w-range w-slide w-id)
-         (inc (extent-upper min-windowing-val w-slide w-id))))
+  (range (extents-lower-bound min-windowing-val w-range w-slide w-id)
+         (extents-upper-bound min-windowing-val w-slide w-id)))
 
 ;; WID requires that a strict lower-bound of the windowing attribute
 ;; be defined. In our example, this will be 0. We will use a window
