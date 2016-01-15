@@ -1,4 +1,4 @@
-(defproject org.onyxplatform/onyx "0.8.4-SNAPSHOT"
+(defproject org.onyxplatform/onyx "0.8.5-SNAPSHOT"
   :description "Distributed, masterless, high performance, fault tolerant data processing for Clojure"
   :url "https://github.com/onyx-platform/onyx"
   :license {:name "Eclipse Public License"
@@ -25,10 +25,10 @@
                  [org.btrplace/scheduler-api "0.42"]
                  [org.btrplace/scheduler-choco "0.42"]
                  [com.stuartsierra/dependency "0.2.0"]
-                 [com.stuartsierra/component "0.3.0"]
+                 [com.stuartsierra/component "0.3.1"]
                  [com.taoensso/timbre "4.1.4"]
                  [com.taoensso/nippy "2.10.0"]
-                 [uk.co.real-logic/aeron-all "0.2.2"]
+                 [uk.co.real-logic/aeron-all "0.2.3"]
                  [prismatic/schema "1.0.3"]
                  [log4j/log4j "1.2.17"]
                  [clj-tuple "0.2.2"]
@@ -105,6 +105,3 @@
      :release-script "scripts/release.sh"
      :merge "master"}]}
   :codox {:output-dir "doc/api"})
- 
- 
- 

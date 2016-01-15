@@ -1,6 +1,19 @@
+#### 0.8.5
+- Fixed bug introduced by a breaking change in Aeron 0.2.2 where we would retry a send to a closed publication.
+- Fix a number of bugs found by Jepsen #453, #462, #437
+- Switch embedded aeron media driver to use SHARED mode by default, which is more robust on small peers.
+- Embedded media driver now cleans up its directory to resolve version incompatibilities encountered by users on upgrading.
+
 #### 0.8.4
 
+- **Breaking change**: Changed the signature of trigger sync function.
+- New feature: Added support for handling lifecycle exceptions with `:lifecycle/handle-exception`
+- New feature: Added the Colocation Task scheduler
 - Bug fix: Fixed a bug where `:flow/from` -> `:all` didn't match compilation step. [#464](https://github.com/onyx-platform/onyx/issues/464)
+- Bug fix: Fixed an issue where peers didn't restart properly on failure under certain conditions
+- Enhancement: Switched to 3rd party scheduling library - BtrPlace.
+- Enhancement: Added parameters for BookKeeper disk threshold error and warnings
+- Dependency change: Upgraded `uk.co.real-logic/aeron-all` to `0.2.3`
 
 #### 0.8.3
 - **Breaking change**: Removed `:onyx.messaging.aeron/inter-service-timeout-ns` peer config setting. Client liveness timeout is now completely set via java property: `aeron.client.liveness.timeout`
