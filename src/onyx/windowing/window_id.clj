@@ -1,4 +1,5 @@
-(ns onyx.windowing.window-id)
+(ns onyx.windowing.window-id
+  (:import [java.math RoundingMode]))
 
 ;; An implementation of the Window-ID specification, as discussed
 ;; in http://web.cecs.pdx.edu/~tufte/papers/WindowAgg.pdf.
@@ -7,8 +8,8 @@
 ;; sliding, fixed, and landmark windows. All mistakes in this
 ;; implementation are our own.
 
-;; WID uses two main algorithms - `extents` and `wids`.
-;; `extents` takes a window ID and returns the windowing
+;; WID uses two main algorithms - `extent` and `wids`.
+;; `extent` takes a window ID and returns the windowing
 ;; attribute upper and lower bounds for which it accepts values.
 ;; WID is a powerful technique because it works over any totally
 ;; ordered domain - not just timestamps. We can exploit this to
@@ -33,13 +34,13 @@
 ;; hand side running vertically 0 - 14 are the natural numbers - these
 ;; are window IDs. Running horizontally across the top are multiples of
 ;; 5. Our window will slide by units of 5. The bars |---| represent
-;; windows across the respective value range. The span of the window is denoted
+;; windows across the respective value range. The extent of the window is denoted
 ;; on the right side of the table, running vertically. Notice that the WID
 ;; algorithms make "partial" windows for the minimum possible value. The first
 ;; 3 window IDs are of length 5, 10, and 15 respectively. You can imagine that
 ;; the rest of the window is on the left-hand-side (not seen) of the X axis.
 ;; The ranges (right hand side) are inclusive on both sides. That is, the bucket
-;; [0, 5) captures all values between 0 and 4.999999... using the mathematical
+;; captures all values between 0 and 4.999999... or, [0, 5) using the mathematical
 ;; notation for intervals (see
 ;; https://en.wikipedia.org/wiki/Interval_%28mathematics%29#Classification_of_intervals)
 
@@ -49,30 +50,30 @@
 ;;2  [-----------)                                                  [ 0, 15)
 ;;3  [---------------)                                              [ 0, 20)
 ;;4      [---------------)                                          [ 5, 25)
-;;5        [---------------)                                      [10, 30)
-;;6            [---------------)                                  [15, 35)
-;;7                [---------------)                              [20, 40)
-;;8                    [---------------)                          [25, 45)
-;;9                        [---------------)                      [30, 50)
-;;10                           [---------------)                  [35, 55)
-;;11                               [---------------)              [40, 60)
-;;12                                   [---------------)          [45, 65)
-;;13                                       [---------------)      [50, 70)
-;;14                                           [---------------)  [55, 75)
+;;5          [---------------)                                      [10, 30)
+;;6              [---------------)                                  [15, 35)
+;;7                  [---------------)                              [20, 40)
+;;8                      [---------------)                          [25, 45)
+;;9                          [---------------)                      [30, 50)
+;;10                             [---------------)                  [35, 55)
+;;11                                 [---------------)              [40, 60)
+;;12                                     [---------------)          [45, 65)
+;;13                                         [---------------)      [50, 70)
+;;14                                             [---------------)  [55, 75)
 ;; We're first going to implement `extents` for queries whose range and
 ;; slide values are the same. This is the first algorithm detailed in
 ;; section 3.3.
 
-(defn extents-lower-bound [min-windowing-val w-range w-slide w-id]
+(defn extent-lower-bound [min-windowing-val w-range w-slide w-id]
   (max min-windowing-val (- (+ min-windowing-val (* w-slide (inc w-id))) w-range)))
 
-(defn extents-upper-bound [min-windowing-val w-slide w-id]
-  (dec (+ min-windowing-val (* w-slide (inc w-id)))))
+(defn extent-upper-bound [min-windowing-val w-slide w-id]
+  (+ min-windowing-val (* w-slide (inc w-id))))
 
 ;; TODO The extent function should take a set of segments (tuples) as an argument and not assume that the extents integers or increment by 1
-(defn extents [min-windowing-val w-range w-slide w-id]
-  (range (extents-lower-bound min-windowing-val w-range w-slide w-id)
-         (extents-upper-bound min-windowing-val w-slide w-id)))
+(defn extent [min-windowing-val w-range w-slide w-id]
+  (range (extent-lower-bound min-windowing-val w-range w-slide w-id)
+         (extent-upper-bound min-windowing-val w-slide w-id)))
 
 ;; WID requires that a strict lower-bound of the windowing attribute
 ;; be defined. In our example, this will be 0. We will use a window
@@ -111,21 +112,25 @@
 ;; `wids` is defined in section 3.4 of the paper. This is the variant
 ;; of the algorithm that also covers the case where range and slide
 ;; are defined on the same value.
-(defn wids-lower [min-windowing-val w-slide w-key t]
-  (dec (long (Math/floor (/ (- (get t w-key)
-                               min-windowing-val)
-                            w-slide)))))
+(defn- wids-lower-bound [^BigDecimal min-windowing-val ^BigDecimal w-slide ^BigDecimal value]
+  (.longValue (.setScale ^BigDecimal (/ (- value min-windowing-val) w-slide) 0 BigDecimal/ROUND_CEILING)))
 
-(defn wids-upper [min-windowing-val w-range w-slide w-key t]
-  (dec (long (Math/floor (/ (- (+ (get t w-key)
-                                  w-range)
-                               min-windowing-val)
-                            w-slide)))))
+(defn- wids-upper-bound [^BigDecimal min-windowing-val ^BigDecimal w-range ^BigDecimal w-slide ^BigDecimal value]
+  (.longValue (.setScale ^BigDecimal (/ (- (+ value w-range) min-windowing-val) w-slide) 0 BigDecimal/ROUND_CEILING)))
 
 (defn wids [min-windowing-val w-range w-slide w-key t]
-  (let [lower (wids-lower min-windowing-val w-slide w-key t)
-        upper (wids-upper min-windowing-val w-range w-slide w-key t)]
-    (range (inc lower) (inc upper))))
+  (with-precision
+    20
+    :rounding RoundingMode/HALF_UP
+    (let [min-windowing-val (bigdec min-windowing-val)
+          w-range (bigdec w-range)
+          w-slide (bigdec w-slide)
+          value (bigdec (get t w-key))
+          lower (wids-lower-bound min-windowing-val w-slide value)
+          upper (wids-upper-bound min-windowing-val w-range w-slide value)]
+      (if (= lower upper)
+        [lower]
+        (range lower upper)))))
 
 ;; The follow code runs through 30 segments with
 ;; windowing attributes 0-30 in sequence, producing

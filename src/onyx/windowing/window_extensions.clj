@@ -52,8 +52,8 @@
   (bounds [this window-id]
     (let [win-min (or (:window/min-value window) (get d/defaults :onyx.windowing/min-value))
           w-range (apply to-standard-units (:window/range window))]
-      [(wid/extents-lower-bound win-min w-range w-range window-id)
-       (wid/extents-upper-bound win-min w-range window-id)])))
+      [(wid/extent-lower-bound win-min w-range w-range window-id)
+       (wid/extent-upper-bound win-min w-range window-id)])))
 
 (deftype SlidingWindow [window]
   IWindow
@@ -77,8 +77,8 @@
     (let [win-min (or (:window/min-value window) (get d/defaults :onyx.windowing/min-value))
           w-range (apply to-standard-units (:window/range window))
           w-slide (apply to-standard-units (or (:window/slide window) (:window/range window)))]
-      [(wid/extents-lower-bound win-min w-range w-slide window-id)
-       (wid/extents-upper-bound win-min w-slide window-id)])))
+      [(wid/extent-lower-bound win-min w-range w-slide window-id)
+       (wid/extent-upper-bound win-min w-slide window-id)])))
 
 (deftype GlobalWindow [window]
   IWindow
