@@ -23,55 +23,69 @@
    {:id 15 :age 35 :event-time #inst "2015-09-13T03:16:00.829-00:00"}])
 
 (def expected-windows
-  [[1442113200000 1442113499999 
-    [{:id 1 :age 21 :event-time #inst "2015-09-13T03:00:00.829-00:00"} 
-     {:id 2 :age 12 :event-time #inst "2015-09-13T03:04:00.829-00:00"}]] 
-   [1442113500000 1442113799999 
-    [{:id 3 :age 3 :event-time #inst "2015-09-13T03:05:00.829-00:00"} 
-     {:id 4 :age 64 :event-time #inst "2015-09-13T03:06:00.829-00:00"}
-     {:id 5 :age 53 :event-time #inst "2015-09-13T03:07:00.829-00:00"}]] 
-   [1442113200000 1442113499999
-    [{:id 1 :age 21 :event-time #inst "2015-09-13T03:00:00.829-00:00"}
-     {:id 2 :age 12 :event-time #inst "2015-09-13T03:04:00.829-00:00"}]] 
-   [1442113500000 1442113799999 
-    [{:id 3 :age 3 :event-time #inst "2015-09-13T03:05:00.829-00:00"}
-     {:id 4 :age 64 :event-time #inst "2015-09-13T03:06:00.829-00:00"}
-     {:id 5 :age 53 :event-time #inst "2015-09-13T03:07:00.829-00:00"}
-     {:id 6 :age 52 :event-time #inst "2015-09-13T03:08:00.829-00:00"}
-     {:id 7 :age 24 :event-time #inst "2015-09-13T03:09:00.829-00:00"}]] 
-   [1442114100000 1442114399999 
-    [{:id 8 :age 35 :event-time #inst "2015-09-13T03:15:00.829-00:00"}]] 
-   [1442114700000 1442114999999 
-    [{:id 9 :age 49 :event-time #inst "2015-09-13T03:25:00.829-00:00"}]]
-   [1442115900000 1442116199999 
-    [{:id 10 :age 37 :event-time #inst "2015-09-13T03:45:00.829-00:00"}]] 
-   [1442113200000 1442113499999 
-    [{:id 1 :age 21 :event-time #inst "2015-09-13T03:00:00.829-00:00"} 
-     {:id 2 :age 12 :event-time #inst "2015-09-13T03:04:00.829-00:00"} 
-     {:id 11 :age 15 :event-time #inst "2015-09-13T03:03:00.829-00:00"}]]
-   [1442113500000 1442113799999 
-    [{:id 3 :age 3 :event-time #inst "2015-09-13T03:05:00.829-00:00"} 
-     {:id 4 :age 64 :event-time #inst "2015-09-13T03:06:00.829-00:00"} 
-     {:id 5 :age 53 :event-time #inst "2015-09-13T03:07:00.829-00:00"} 
-     {:id 6 :age 52 :event-time #inst "2015-09-13T03:08:00.829-00:00"} 
-     {:id 7 :age 24 :event-time #inst "2015-09-13T03:09:00.829-00:00"}]] 
-   [1442114100000 1442114399999 
-    [{:id 8 :age 35 :event-time #inst "2015-09-13T03:15:00.829-00:00"}
-     {:id 15 :age 35 :event-time #inst "2015-09-13T03:16:00.829-00:00"}]]
-   [1442114700000 1442114999999 
-    [{:id 9 :age 49 :event-time #inst "2015-09-13T03:25:00.829-00:00"}]] 
-   [1442115900000 1442116199999 
-    [{:id 10 :age 37 :event-time #inst "2015-09-13T03:45:00.829-00:00"}]] 
-   [1442116500000 1442116799999 
-    [{:id 12 :age 22 :event-time #inst "2015-09-13T03:56:00.829-00:00"} 
-     {:id 13 :age 83 :event-time #inst "2015-09-13T03:59:00.829-00:00"}]] 
-   [1442115000000 1442115299999 
-    [{:id 14 :age 60 :event-time #inst "2015-09-13T03:32:00.829-00:00"}]]])
+  [[#inst "2015-09-13T03:05:00.000-00:00"
+    #inst "2015-09-13T03:10:00.000-00:00"
+    [{:id 1, :age 21, :event-time #inst "2015-09-13T03:00:00.829-00:00"}
+     {:id 2, :age 12, :event-time #inst "2015-09-13T03:04:00.829-00:00"}]]
+   [#inst "2015-09-13T03:05:00.000-00:00"
+    #inst "2015-09-13T03:10:00.000-00:00"
+    [{:id 1, :age 21, :event-time #inst "2015-09-13T03:00:00.829-00:00"}
+     {:id 2, :age 12, :event-time #inst "2015-09-13T03:04:00.829-00:00"}]]
+   [#inst "2015-09-13T03:05:00.000-00:00"
+    #inst "2015-09-13T03:10:00.000-00:00"
+    [{:id 1, :age 21, :event-time #inst "2015-09-13T03:00:00.829-00:00"}
+     {:id 2, :age 12, :event-time #inst "2015-09-13T03:04:00.829-00:00"}
+     {:id 11, :age 15, :event-time #inst "2015-09-13T03:03:00.829-00:00"}]]
+   [#inst "2015-09-13T03:10:00.000-00:00"
+    #inst "2015-09-13T03:15:00.000-00:00"
+    [{:id 3, :age 3, :event-time #inst "2015-09-13T03:05:00.829-00:00"}
+     {:id 4, :age 64, :event-time #inst "2015-09-13T03:06:00.829-00:00"}
+     {:id 5, :age 53, :event-time #inst "2015-09-13T03:07:00.829-00:00"}]]
+   [#inst "2015-09-13T03:10:00.000-00:00"
+    #inst "2015-09-13T03:15:00.000-00:00"
+    [{:id 3, :age 3, :event-time #inst "2015-09-13T03:05:00.829-00:00"}
+     {:id 4, :age 64, :event-time #inst "2015-09-13T03:06:00.829-00:00"}
+     {:id 5, :age 53, :event-time #inst "2015-09-13T03:07:00.829-00:00"}
+     {:id 6, :age 52, :event-time #inst "2015-09-13T03:08:00.829-00:00"}
+     {:id 7, :age 24, :event-time #inst "2015-09-13T03:09:00.829-00:00"}]]
+   [#inst "2015-09-13T03:10:00.000-00:00"
+    #inst "2015-09-13T03:15:00.000-00:00"
+    [{:id 3, :age 3, :event-time #inst "2015-09-13T03:05:00.829-00:00"}
+     {:id 4, :age 64, :event-time #inst "2015-09-13T03:06:00.829-00:00"}
+     {:id 5, :age 53, :event-time #inst "2015-09-13T03:07:00.829-00:00"}
+     {:id 6, :age 52, :event-time #inst "2015-09-13T03:08:00.829-00:00"}
+     {:id 7, :age 24, :event-time #inst "2015-09-13T03:09:00.829-00:00"}]]
+   [#inst "2015-09-13T03:20:00.000-00:00"
+    #inst "2015-09-13T03:25:00.000-00:00"
+    [{:id 8, :age 35, :event-time #inst "2015-09-13T03:15:00.829-00:00"}]]
+   [#inst "2015-09-13T03:20:00.000-00:00"
+    #inst "2015-09-13T03:25:00.000-00:00"
+    [{:id 8, :age 35, :event-time #inst "2015-09-13T03:15:00.829-00:00"}
+     {:id 15, :age 35, :event-time #inst "2015-09-13T03:16:00.829-00:00"}]]
+   [#inst "2015-09-13T03:30:00.000-00:00"
+    #inst "2015-09-13T03:35:00.000-00:00"
+    [{:id 9, :age 49, :event-time #inst "2015-09-13T03:25:00.829-00:00"}]]
+   [#inst "2015-09-13T03:30:00.000-00:00"
+    #inst "2015-09-13T03:35:00.000-00:00"
+    [{:id 9, :age 49, :event-time #inst "2015-09-13T03:25:00.829-00:00"}]]
+   [#inst "2015-09-13T03:35:00.000-00:00"
+    #inst "2015-09-13T03:40:00.000-00:00"
+    [{:id 14, :age 60, :event-time #inst "2015-09-13T03:32:00.829-00:00"}]]
+   [#inst "2015-09-13T03:50:00.000-00:00"
+    #inst "2015-09-13T03:55:00.000-00:00"
+    [{:id 10, :age 37, :event-time #inst "2015-09-13T03:45:00.829-00:00"}]]
+   [#inst "2015-09-13T03:50:00.000-00:00"
+    #inst "2015-09-13T03:55:00.000-00:00"
+    [{:id 10, :age 37, :event-time #inst "2015-09-13T03:45:00.829-00:00"}]]
+   [#inst "2015-09-13T04:00:00.000-00:00"
+    #inst "2015-09-13T04:05:00.000-00:00"
+    [{:id 12, :age 22, :event-time #inst "2015-09-13T03:56:00.829-00:00"}
+     {:id 13, :age 83, :event-time #inst "2015-09-13T03:59:00.829-00:00"}]]])
 
 (def test-state (atom []))
 
 (defn update-atom! [event window trigger {:keys [window-id upper-bound lower-bound]} state]
-  (swap! test-state conj [lower-bound upper-bound state]))
+  (swap! test-state conj [(java.util.Date. lower-bound) (java.util.Date. upper-bound) state]))
 
 (def in-chan (atom nil))
 
@@ -153,7 +167,7 @@
     (reset! test-state [])
 
     (with-test-env [test-env [3 env-config peer-config]]
-      (onyx.api/submit-job
+                   (onyx.api/submit-job
        peer-config
        {:catalog catalog
         :workflow workflow
@@ -161,14 +175,14 @@
         :windows windows
         :triggers triggers
         :task-scheduler :onyx.task-scheduler/balanced})
-      
-      (doseq [i input]
+
+                   (doseq [i input]
         (>!! @in-chan i))
-      (>!! @in-chan :done)
+                   (>!! @in-chan :done)
 
-      (close! @in-chan)
+                   (close! @in-chan)
 
-      (let [results (take-segments! @out-chan)]
-        (is (= (into #{} input) (into #{} (butlast results))))
-        (is (= :done (last results)))
-        (is (= expected-windows @test-state))))))
+                   (let [results (take-segments! @out-chan)]
+                     (is (= (into #{} input) (into #{} (butlast results))))
+                     (is (= :done (last results)))
+                     (is (= expected-windows (sort-by first @test-state)))))))
